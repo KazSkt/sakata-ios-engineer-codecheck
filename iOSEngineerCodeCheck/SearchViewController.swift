@@ -56,8 +56,8 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
                     self.tableView.reloadData()
                 }
             }
-        // これ呼ばなきゃリストが更新されません
-        dataTask?.resume()
+            // これ呼ばなきゃリストが更新されません
+            dataTask?.resume()
         }
         
     }
