@@ -15,8 +15,6 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
     var repositories: [[String: Any]]=[]
     
     var dataTask: URLSessionTask?
-    var searchWord: String!
-    var apiSearchUrl: String!
     var selectedIdx: Int!
     
     override func viewDidLoad() {
@@ -38,11 +36,11 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
-        searchWord = searchBar.text!
+        let searchWord = searchBar.text!
         
         //検索結果データをrepositoriesへ格納し、リストへ反映
         if searchWord.count != 0 {
-            apiSearchUrl = "https://api.github.com/search/repositories?q=\(searchWord!)"
+            let apiSearchUrl = "https://api.github.com/search/repositories?q=\(searchWord)"
             dataTask = URLSession.shared.dataTask(with: URL(string: apiSearchUrl)!) { (data, res, err) in
                 guard let obj = try! JSONSerialization.jsonObject(with: data!) as? [String: Any] else {
                     return
