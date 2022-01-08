@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SearchViewController: UITableViewController, UISearchBarDelegate {
+class SearchViewController: UITableViewController {
 
     @IBOutlet weak var searchBar: UISearchBar!
     
@@ -24,6 +24,41 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
         searchBar.delegate = self
     }
     
+    
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "Detail"{
+            let detailVC = segue.destination as? DetailViewController
+            guard let _selectedIdx = selectedIdx else {
+                print("selectedIdx is nil")
+                return
+            }
+            detailVC?.repository = repositories[_selectedIdx]
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return repositories.count
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell()
+        let rp = repositories[indexPath.row]
+        cell.textLabel?.text = rp["full_name"] as? String ?? ""
+        cell.detailTextLabel?.text = rp["language"] as? String ?? ""
+        cell.tag = indexPath.row
+        return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // 画面遷移時に呼ばれる
+        selectedIdx = indexPath.row
+        performSegue(withIdentifier: "Detail", sender: self)
+    }
+    
+}
+
+extension SearchViewController: UISearchBarDelegate {
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         // ↓こうすれば初期のテキストを消せる
         searchBar.text = ""
@@ -79,35 +114,4 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
         }
         
     }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "Detail"{
-            let detailVC = segue.destination as? DetailViewController
-            guard let _selectedIdx = selectedIdx else {
-                print("selectedIdx is nil")
-                return
-            }
-            detailVC?.repository = repositories[_selectedIdx]
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return repositories.count
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
-        let rp = repositories[indexPath.row]
-        cell.textLabel?.text = rp["full_name"] as? String ?? ""
-        cell.detailTextLabel?.text = rp["language"] as? String ?? ""
-        cell.tag = indexPath.row
-        return cell
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // 画面遷移時に呼ばれる
-        selectedIdx = indexPath.row
-        performSegue(withIdentifier: "Detail", sender: self)
-    }
-    
 }
