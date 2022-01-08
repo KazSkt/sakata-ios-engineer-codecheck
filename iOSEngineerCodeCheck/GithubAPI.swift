@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 class GithubAPI {
-    func searchRepositories(searchWord: String, completion: @escaping ([Repository]?) -> Void) {
+    func searchRepositories(searchWord: String, completion: @escaping ([Repository]) -> Void) {
         // 検索結果データをitemsへ
         if searchWord.count != 0 {
             let apiSearchUrlStr = "https://api.github.com/search/repositories?q=\(searchWord)"

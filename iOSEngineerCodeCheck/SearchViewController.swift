@@ -78,11 +78,7 @@ extension SearchViewController: UISearchBarDelegate {
         
         //検索結果を取得
         GithubAPI().searchRepositories(searchWord: searchWord) { repos in
-            guard let _repos = repos else {
-                return
-            }
-            
-            self.repositories = _repos
+            self.repositories = repos
             
             DispatchQueue.main.async {
                 self.tableView.reloadData()
