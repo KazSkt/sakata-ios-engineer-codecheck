@@ -40,6 +40,7 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
         
         searchWord = searchBar.text!
         
+        //検索結果データをrepositoriesへ格納し、リストへ反映
         if searchWord.count != 0 {
             apiSearchUrl = "https://api.github.com/search/repositories?q=\(searchWord!)"
             dataTask = URLSession.shared.dataTask(with: URL(string: apiSearchUrl)!) { (data, res, err) in
