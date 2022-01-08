@@ -27,10 +27,12 @@ class SearchViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "Detail"{
             let detailVC = segue.destination as? DetailViewController
+            
             guard let _selectedIdx = selectedIdx else {
                 print("selectedIdx is nil")
                 return
             }
+            
             detailVC?.repository = repositories[_selectedIdx]
         }
     }
@@ -67,46 +69,24 @@ extension SearchViewController: UISearchBarDelegate {
         dataTask?.cancel()
     }
     
-    // キーボードのsearchボタンが押されたとき
+    // キーボードのsearchボタンが押されたとき  
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        
         // searchBar.textがnilの場合はreturnする
         guard let searchWord = searchBar.text else {
             return
         }
         
-        // 検索結果データをrepositoriesへ格納し、リストへ反映
-        if searchWord.count != 0 {
-            let apiSearchUrlStr = "https://api.github.com/search/repositories?q=\(searchWord)"
-            
-            // URLが不正である場合はreturn
-            guard let apiSearchUrl = URL(string: apiSearchUrlStr) else {
+        //検索結果を取得
+        GithubAPI().searchRepositories(searchWord: searchWord) { repos in
+            guard let _repos = repos else {
                 return
             }
             
-            dataTask = URLSession.shared.dataTask(with: apiSearchUrl) { (data, res, err) in
-                // データがない場合return
-                guard let _data = data else {
-                    return
-                }
-                
-                do {
-                    let obj = try JSONDecoder().decode(Items.self, from: _data)
-
-                    let items = obj.items
-                    
-                    self.repositories = items
-                    
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                    }
-                } catch {
-                    print(error)
-                }
+            self.repositories = _repos
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
             }
-            // これ呼ばなきゃリストが更新されません
-            dataTask?.resume()
         }
-        
     }
 }

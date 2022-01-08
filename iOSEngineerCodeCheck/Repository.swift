@@ -17,7 +17,7 @@ struct Owner: Codable {
 }
 
 struct Repository: Codable {
-    var language: String
+    var language: String?
     var stars: Int
     var watchers: Int
     var forks: Int
