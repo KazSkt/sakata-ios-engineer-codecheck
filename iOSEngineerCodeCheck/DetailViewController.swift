@@ -26,6 +26,7 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //選択されたリポジトリを取得
         let repo = searchVC.repositories[searchVC.selectedIdx]
         
         langLabel.text = "Written in \(repo["language"] as? String ?? "")"
@@ -37,7 +38,7 @@ class DetailViewController: UIViewController {
         
     }
     
-    func getImage(){
+    func getImage() {
         
         let repo = searchVC.repositories[searchVC.selectedIdx]
         
@@ -51,6 +52,7 @@ class DetailViewController: UIViewController {
             return
         }
         
+        //リポジトリオーナのアバタ画像取得
         let dataTask = URLSession.shared.dataTask(with: URL(string: imgURL)!) { (data, res, err) in
             let img = UIImage(data: data!)!
             DispatchQueue.main.async {
