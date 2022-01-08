@@ -66,7 +66,7 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
         
         if segue.identifier == "Detail"{
             let dtl = segue.destination as! DetailViewController
-            dtl.vc1 = self
+            dtl.searchVC = self
         }
         
     }
