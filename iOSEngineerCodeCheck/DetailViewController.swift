@@ -40,30 +40,11 @@ class DetailViewController: UIViewController {
             return
         }
         
-        let imgURLStr = owner.avatarURL
-        
-        // 画像URLが適切かどうか
-        guard let imgURL = URL(string: imgURLStr) else {
-            return
-        }
-        
         //リポジトリオーナのアバタ画像取得
-        let dataTask = URLSession.shared.dataTask(with: imgURL) { (data, res, err) in
-            //データがない場合return
-            guard let _data = data else {
-                return
-            }
-            
-            // UIImageがnilかどうか
-            guard let img = UIImage(data: _data) else {
-                return
-            }
-            
+        GithubAPI().fetchAvatarImage(avatarURL: owner.avatarURL) { img in
             DispatchQueue.main.async {
                 self.imageView.image = img
             }
         }
-        dataTask.resume()
     }
-    
 }

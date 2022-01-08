@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class GithubAPI {
     func searchRepositories(searchWord: String, completion: @escaping ([Repository]?) -> Void) {
@@ -37,5 +38,28 @@ class GithubAPI {
             }
             dataTask.resume()
         }
+    }
+    
+    func fetchAvatarImage(avatarURL: String, completion: @escaping (UIImage) -> Void) {
+        // 画像URLが適切かどうか
+        guard let imgURL = URL(string: avatarURL) else {
+            return
+        }
+        
+        //リポジトリオーナのアバタ画像取得
+        let dataTask = URLSession.shared.dataTask(with: imgURL) { (data, res, err) in
+            //データがない場合return
+            guard let _data = data else {
+                return
+            }
+            
+            // UIImageがnilかどうか
+            guard let img = UIImage(data: _data) else {
+                return
+            }
+            
+            completion(img)
+        }
+        dataTask.resume()
     }
 }
