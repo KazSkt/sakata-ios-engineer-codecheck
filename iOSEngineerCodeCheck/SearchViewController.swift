@@ -12,10 +12,10 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
 
     @IBOutlet weak var searchBar: UISearchBar!
     
-    var repositories: [[String: Any]]=[]
+    var repositories: [[String: Any]] = []
     
     var dataTask: URLSessionTask?
-    var selectedIdx: Int!
+    var selectedIdx: Int?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,12 +62,14 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
         if segue.identifier == "Detail"{
-            let dtl = segue.destination as! DetailViewController
-            dtl.searchVC = self
+            let detailVC = segue.destination as! DetailViewController
+            guard let _selectedIdx = selectedIdx else {
+                print("selectedIdx is nil")
+                return
+            }
+            detailVC.repository = repositories[_selectedIdx]
         }
-        
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -75,21 +77,18 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let cell = UITableViewCell()
         let rp = repositories[indexPath.row]
         cell.textLabel?.text = rp["full_name"] as? String ?? ""
         cell.detailTextLabel?.text = rp["language"] as? String ?? ""
         cell.tag = indexPath.row
         return cell
-        
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // 画面遷移時に呼ばれる
         selectedIdx = indexPath.row
         performSegue(withIdentifier: "Detail", sender: self)
-        
     }
     
 }
