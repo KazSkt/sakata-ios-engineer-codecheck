@@ -43,13 +43,17 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
         if searchWord.count != 0 {
             apiSearchUrl = "https://api.github.com/search/repositories?q=\(searchWord!)"
             dataTask = URLSession.shared.dataTask(with: URL(string: apiSearchUrl)!) { (data, res, err) in
-                if let obj = try! JSONSerialization.jsonObject(with: data!) as? [String: Any] {
-                    if let items = obj["items"] as? [[String: Any]] {
-                    self.repositories = items
-                        DispatchQueue.main.async {
-                            self.tableView.reloadData()
-                        }
-                    }
+                guard let obj = try! JSONSerialization.jsonObject(with: data!) as? [String: Any] else {
+                    return
+                }
+
+                guard let items = obj["items"] as? [[String: Any]] else {
+                    return
+                }
+                
+                self.repositories = items
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
                 }
             }
         // これ呼ばなきゃリストが更新されません
