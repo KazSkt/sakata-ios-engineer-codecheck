@@ -21,40 +21,47 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var forksLabel: UILabel!
     @IBOutlet weak var issuesLabel: UILabel!
     
-    var searchVC: SearchViewController!
+    var repository: [String: Any] = [:]
         
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //選択されたリポジトリを取得
-        let repo = searchVC.repositories[searchVC.selectedIdx]
-        
-        langLabel.text = "Written in \(repo["language"] as? String ?? "")"
-        starsLabel.text = "\(repo["stargazers_count"] as? Int ?? 0) stars"
-        watchersLabel.text = "\(repo["wachers_count"] as? Int ?? 0) watchers"
-        forksLabel.text = "\(repo["forks_count"] as? Int ?? 0) forks"
-        issuesLabel.text = "\(repo["open_issues_count"] as? Int ?? 0) open issues"
+        langLabel.text = "Written in \(repository["language"] as? String ?? "")"
+        starsLabel.text = "\(repository["stargazers_count"] as? Int ?? 0) stars"
+        watchersLabel.text = "\(repository["wachers_count"] as? Int ?? 0) watchers"
+        forksLabel.text = "\(repository["forks_count"] as? Int ?? 0) forks"
+        issuesLabel.text = "\(repository["open_issues_count"] as? Int ?? 0) open issues"
         getImage()
-        
     }
     
     func getImage() {
+        titleLabel.text = repository["full_name"] as? String ?? ""
         
-        let repo = searchVC.repositories[searchVC.selectedIdx]
-        
-        titleLabel.text = repo["full_name"] as? String
-        
-        guard let owner = repo["owner"] as? [String: Any] else {
+        guard let owner = repository["owner"] as? [String: Any] else {
             return
         }
         
-        guard let imgURL = owner["avatar_url"] as? String else {
+        guard let imgURLStr = owner["avatar_url"] as? String else {
+            return
+        }
+        
+        // 画像URLが適切かどうか
+        guard let imgURL = URL(string: imgURLStr) else {
             return
         }
         
         //リポジトリオーナのアバタ画像取得
-        let dataTask = URLSession.shared.dataTask(with: URL(string: imgURL)!) { (data, res, err) in
-            let img = UIImage(data: data!)!
+        let dataTask = URLSession.shared.dataTask(with: imgURL) { (data, res, err) in
+            //データがない場合return
+            guard let _data = data else {
+                return
+            }
+            
+            // UIImageがnilかどうか
+            guard let img = UIImage(data: _data) else {
+                return
+            }
+            
             DispatchQueue.main.async {
                 self.imageView.image = img
             }
