@@ -56,8 +56,8 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
                     self.tableView.reloadData()
                 }
             }
-        // これ呼ばなきゃリストが更新されません
-        dataTask?.resume()
+            // これ呼ばなきゃリストが更新されません
+            dataTask?.resume()
         }
         
     }
@@ -65,8 +65,8 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "Detail"{
-            let dtl = segue.destination as! ViewController2
-            dtl.vc1 = self
+            let dtl = segue.destination as! DetailViewController
+            dtl.searchVC = self
         }
         
     }
