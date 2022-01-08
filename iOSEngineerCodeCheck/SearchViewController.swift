@@ -34,25 +34,44 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
         dataTask?.cancel()
     }
     
+    // キーボードのsearchボタンが押されたとき
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
-        let searchWord = searchBar.text!
+        // searchBar.textがnilの場合はreturnする
+        guard let searchWord = searchBar.text else {
+            return
+        }
         
-        //検索結果データをrepositoriesへ格納し、リストへ反映
+        // 検索結果データをrepositoriesへ格納し、リストへ反映
         if searchWord.count != 0 {
-            let apiSearchUrl = "https://api.github.com/search/repositories?q=\(searchWord)"
-            dataTask = URLSession.shared.dataTask(with: URL(string: apiSearchUrl)!) { (data, res, err) in
-                guard let obj = try! JSONSerialization.jsonObject(with: data!) as? [String: Any] else {
-                    return
-                }
-
-                guard let items = obj["items"] as? [[String: Any]] else {
+            let apiSearchUrlStr = "https://api.github.com/search/repositories?q=\(searchWord)"
+            
+            // URLが不正である場合はreturn
+            guard let apiSearchUrl = URL(string: apiSearchUrlStr) else {
+                return
+            }
+            
+            dataTask = URLSession.shared.dataTask(with: apiSearchUrl) { (data, res, err) in
+                // データがない場合return
+                guard let _data = data else {
                     return
                 }
                 
-                self.repositories = items
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
+                do {
+                    guard let obj = try JSONSerialization.jsonObject(with: _data) as? [String: Any] else {
+                        return
+                    }
+
+                    guard let items = obj["items"] as? [[String: Any]] else {
+                        return
+                    }
+                    
+                    self.repositories = items
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                } catch {
+                    print(error)
                 }
             }
             // これ呼ばなきゃリストが更新されません
@@ -63,12 +82,12 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "Detail"{
-            let detailVC = segue.destination as! DetailViewController
+            let detailVC = segue.destination as? DetailViewController
             guard let _selectedIdx = selectedIdx else {
                 print("selectedIdx is nil")
                 return
             }
-            detailVC.repository = repositories[_selectedIdx]
+            detailVC?.repository = repositories[_selectedIdx]
         }
     }
     

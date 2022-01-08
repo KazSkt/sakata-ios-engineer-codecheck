@@ -35,19 +35,33 @@ class DetailViewController: UIViewController {
     }
     
     func getImage() {
-        titleLabel.text = repository["full_name"] as? String
+        titleLabel.text = repository["full_name"] as? String ?? ""
         
         guard let owner = repository["owner"] as? [String: Any] else {
             return
         }
         
-        guard let imgURL = owner["avatar_url"] as? String else {
+        guard let imgURLStr = owner["avatar_url"] as? String else {
+            return
+        }
+        
+        // 画像URLが適切かどうか
+        guard let imgURL = URL(string: imgURLStr) else {
             return
         }
         
         //リポジトリオーナのアバタ画像取得
-        let dataTask = URLSession.shared.dataTask(with: URL(string: imgURL)!) { (data, res, err) in
-            let img = UIImage(data: data!)!
+        let dataTask = URLSession.shared.dataTask(with: imgURL) { (data, res, err) in
+            //データがない場合return
+            guard let _data = data else {
+                return
+            }
+            
+            // UIImageがnilかどうか
+            guard let img = UIImage(data: _data) else {
+                return
+            }
+            
             DispatchQueue.main.async {
                 self.imageView.image = img
             }
