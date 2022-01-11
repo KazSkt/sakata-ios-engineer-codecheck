@@ -86,3 +86,7 @@ extension SearchViewController: UISearchBarDelegate {
         }
     }
 }
+
+extension SearchViewController: RepositoriesPresenterOutput {
+    
+}
