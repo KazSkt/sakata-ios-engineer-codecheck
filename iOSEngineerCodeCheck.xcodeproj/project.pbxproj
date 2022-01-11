@@ -84,6 +84,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6EDD25F0278D77030084EE2F /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				6EDD25EC2789B14E0084EE2F /* GithubAPIModel.swift */,
+				6EDD25EA2789A3E00084EE2F /* Repository.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		6EDD25F1278D771F0084EE2F /* View */ = {
+			isa = PBXGroup;
+			children = (
+				BFD945E2244DC5E80012785A /* SearchViewController.swift */,
+				BF0A658C244F2A3B00280FA6 /* DetailViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		6EDD25F2278D77360084EE2F /* Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				6EDD25EE278D12DB0084EE2F /* RepositoriesPresenter.swift */,
+			);
+			path = Presenter;
+			sourceTree = "<group>";
+		};
 		BFD945D2244DC5E80012785A = {
 			isa = PBXGroup;
 			children = (
@@ -109,11 +135,9 @@
 			children = (
 				BFD945DE244DC5E80012785A /* AppDelegate.swift */,
 				BFD945E0244DC5E80012785A /* SceneDelegate.swift */,
-				BFD945E2244DC5E80012785A /* SearchViewController.swift */,
-				BF0A658C244F2A3B00280FA6 /* DetailViewController.swift */,
-				6EDD25EA2789A3E00084EE2F /* Repository.swift */,
-				6EDD25EC2789B14E0084EE2F /* GithubAPIModel.swift */,
-				6EDD25EE278D12DB0084EE2F /* RepositoriesPresenter.swift */,
+				6EDD25F1278D771F0084EE2F /* View */,
+				6EDD25F2278D77360084EE2F /* Presenter */,
+				6EDD25F0278D77030084EE2F /* Model */,
 				BFD945E4244DC5E80012785A /* Main.storyboard */,
 				BFD945E7244DC5EB0012785A /* Assets.xcassets */,
 				BFD945E9244DC5EB0012785A /* LaunchScreen.storyboard */,
