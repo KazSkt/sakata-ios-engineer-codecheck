@@ -12,15 +12,14 @@ class SearchViewController: UITableViewController {
 
     @IBOutlet weak var searchBar: UISearchBar!
     
-    var repositories: [Repository] = []
-    
-    var dataTask: URLSessionTask?
-    var selectedIdx: Int?
+    private var presenter: RepositoriesPresenterInput!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        searchBar.text = "GitHubのリポジトリを検索できるよー"
+        
+        presenter = RepositoriesPresenter(output: self)
+        
+        searchBar.placeholder = "GitHubのリポジトリを検索できるよー"
         searchBar.delegate = self
     }
     
@@ -28,22 +27,17 @@ class SearchViewController: UITableViewController {
         if segue.identifier == "Detail"{
             let detailVC = segue.destination as? DetailViewController
             
-            guard let _selectedIdx = selectedIdx else {
-                print("selectedIdx is nil")
-                return
-            }
-            
-            detailVC?.repository = repositories[_selectedIdx]
+            detailVC?.repository = presenter.selectedRepository()
         }
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return repositories.count
+        return presenter.numberOfRepositories
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
-        let rp = repositories[indexPath.row]
+        let rp = presenter.repository(forRow: indexPath.row)
         cell.textLabel?.text = rp.fullName
         cell.detailTextLabel?.text = rp.language
         cell.tag = indexPath.row
@@ -52,7 +46,7 @@ class SearchViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // 画面遷移時に呼ばれる
-        selectedIdx = indexPath.row
+        presenter.didSelect(index: indexPath.row)
         performSegue(withIdentifier: "Detail", sender: self)
     }
     
@@ -61,12 +55,12 @@ class SearchViewController: UITableViewController {
 extension SearchViewController: UISearchBarDelegate {
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         // ↓こうすれば初期のテキストを消せる
-        searchBar.text = ""
+        //searchBar.text = ""
         return true
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        dataTask?.cancel()
+        presenter.cancelSearch()
     }
     
     // キーボードのsearchボタンが押されたとき  
@@ -77,12 +71,12 @@ extension SearchViewController: UISearchBarDelegate {
         }
         
         //検索結果を取得
-        GithubAPI().searchRepositories(searchWord: searchWord) { repos in
-            self.repositories = repos
-            
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-        }
+        presenter.searchRepositories(searchWord: searchWord)
+    }
+}
+
+extension SearchViewController: RepositoriesPresenterOutput {
+    func update() {
+        tableView.reloadData()
     }
 }

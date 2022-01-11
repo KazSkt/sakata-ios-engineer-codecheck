@@ -9,7 +9,9 @@
 import Foundation
 import UIKit
 
-class GithubAPI {
+class GithubAPIModel {
+    private var dataTask: URLSessionDataTask?
+    
     func searchRepositories(searchWord: String, completion: @escaping ([Repository]) -> Void) {
         // 検索結果データをitemsへ
         if searchWord.count != 0 {
@@ -20,7 +22,7 @@ class GithubAPI {
                 return
             }
             
-            let dataTask = URLSession.shared.dataTask(with: apiSearchUrl) { (data, res, err) in
+            dataTask = URLSession.shared.dataTask(with: apiSearchUrl) { (data, res, err) in
                 // データがない場合return
                 guard let _data = data else {
                     return
@@ -36,7 +38,7 @@ class GithubAPI {
                     print(error)
                 }
             }
-            dataTask.resume()
+            dataTask?.resume()
         }
     }
     
@@ -47,7 +49,7 @@ class GithubAPI {
         }
         
         //リポジトリオーナのアバタ画像取得
-        let dataTask = URLSession.shared.dataTask(with: imgURL) { (data, res, err) in
+        dataTask = URLSession.shared.dataTask(with: imgURL) { (data, res, err) in
             //データがない場合return
             guard let _data = data else {
                 return
@@ -60,6 +62,10 @@ class GithubAPI {
             
             completion(img)
         }
-        dataTask.resume()
+        dataTask?.resume()
+    }
+    
+    func cancel() {
+        dataTask?.cancel()
     }
 }
