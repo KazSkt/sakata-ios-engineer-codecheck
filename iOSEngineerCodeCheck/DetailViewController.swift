@@ -41,7 +41,7 @@ class DetailViewController: UIViewController {
         }
         
         //リポジトリオーナのアバタ画像取得
-        GithubAPI().fetchAvatarImage(avatarURL: owner.avatarURL) { img in
+        GithubAPIModel().fetchAvatarImage(avatarURL: owner.avatarURL) { img in
             DispatchQueue.main.async {
                 self.imageView.image = img
             }
